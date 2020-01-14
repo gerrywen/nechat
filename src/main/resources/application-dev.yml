@@ -1,0 +1,22 @@
+server:
+  ip: 127.0.0.1
+  port: 3333
+  servlet:
+    context-path: /
+
+spring:
+  security:
+    user:
+      name: admin
+      password: admin0102
+  application:
+    name: nechat
+  main:
+    allow-bean-definition-overriding: true # 当遇到相同的名字的时候，是否允许覆盖注册
+
+logging:
+  level:
+    root: ERROR #日志配置DEBUG,INFO,WARN,ERROR
+    com.gerrywen.nechat: debug
+#  file: demo_log.log #配置日志生成路径
+#  path: /var/logs #配置日志文件名称

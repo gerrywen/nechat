@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: dev #默认为开发环境
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true # 整合mybatis开启驼峰法命名转换
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+
+platform:
+  id: com.gerrywen.nechat
