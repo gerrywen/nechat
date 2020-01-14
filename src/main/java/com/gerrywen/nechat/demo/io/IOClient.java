@@ -18,7 +18,7 @@ public class IOClient {
                 while (true) {
                     try {
                         socket.getOutputStream().write((new Date() + ": hello world").getBytes());
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
