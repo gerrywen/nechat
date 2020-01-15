@@ -1,9 +1,16 @@
 package com.gerrywen.nechat.demo.protocol.protocol.command;
 
-import com.gerrywen.nechat.demo.protocol.serialize.impl.JSONSerializer;
+import com.gerrywen.nechat.demo.nettylogin.protocol.Packet;
+import com.gerrywen.nechat.demo.nettylogin.protocol.PacketCodeC;
+import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
+import com.gerrywen.nechat.demo.nettylogin.serialize.Serializer;
+import com.gerrywen.nechat.demo.nettylogin.serialize.impl.JSONSerializer;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.UUID;
 
 /**
  * @author wenguoli
@@ -13,18 +20,17 @@ public class PacketCodeCTest {
 
     @Test
     public void encode() {
-        JSONSerializer serializer = new JSONSerializer();
+        Serializer serializer = new JSONSerializer();
         LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
 
         loginRequestPacket.setVersion(((byte) 1));
-        loginRequestPacket.setUserId(123);
+        loginRequestPacket.setUserId(UUID.randomUUID().toString());
         loginRequestPacket.setUsername("zhangsan");
         loginRequestPacket.setPassword("password");
 
-        PacketCodeC packetCodeC = new PacketCodeC();
-        ByteBuf byteBuf = packetCodeC.encode(loginRequestPacket);
+        PacketCodeC packetCodeC = PacketCodeC.INSTANCE;
+        ByteBuf byteBuf = packetCodeC.encode(ByteBufAllocator.DEFAULT, loginRequestPacket);
         Packet decodedPacket = packetCodeC.decode(byteBuf);
-
 
         Assert.assertArrayEquals(serializer.serialize(loginRequestPacket), serializer.serialize(decodedPacket));
     }

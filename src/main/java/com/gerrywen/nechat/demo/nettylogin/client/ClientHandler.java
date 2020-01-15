@@ -4,6 +4,8 @@ import com.gerrywen.nechat.demo.nettylogin.protocol.Packet;
 import com.gerrywen.nechat.demo.nettylogin.protocol.PacketCodeC;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.LoginResponsePacket;
+import com.gerrywen.nechat.demo.nettylogin.protocol.response.MessageResponsePacket;
+import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -53,9 +55,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             LoginResponsePacket loginResponsePacket = (LoginResponsePacket) packet;
             if (loginResponsePacket.isSuccess()) {
                 System.out.println(new Date() + ": 客户端登录成功");
+                // 登录添加标记是否已经登录
+                LoginUtil.markAsLogin(ctx.channel());
             } else {
                 System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
             }
+        } else if (packet instanceof MessageResponsePacket){
+            MessageResponsePacket messageResponsePacket = (MessageResponsePacket) packet;
+            System.out.println(new Date() + ": 收到服务端的消息: " + messageResponsePacket.getMessage());
         }
 
     }
