@@ -12,6 +12,12 @@ import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.LOGIN
  */
 @Data
 public class LoginResponsePacket extends Packet {
+
+    private String userId;
+
+    private String userName;
+
+
     private boolean success;
 
     private String reason;

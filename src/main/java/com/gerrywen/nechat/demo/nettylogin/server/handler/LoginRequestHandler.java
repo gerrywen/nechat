@@ -2,11 +2,14 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.LoginResponsePacket;
+import com.gerrywen.nechat.demo.nettylogin.session.Session;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
+import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author wenguoli
@@ -21,13 +24,17 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
         LoginResponsePacket loginResponsePacket = new LoginResponsePacket();
         loginResponsePacket.setVersion(loginRequestPacket.getVersion());
-
+        loginResponsePacket.setUserName(loginRequestPacket.getUserName());
 
         if (valid(loginRequestPacket)) {
+            // 登录成功
             loginResponsePacket.setSuccess(true);
-            System.out.println(new Date() + ": 登录成功!");
-            // 设置登录标记
-            LoginUtil.markAsLogin(ctx.channel());
+            // 生成用户id
+            String userId = randomUserId();
+            loginResponsePacket.setUserId(userId);
+            System.out.println("[" + loginRequestPacket.getUserName() + "]登录成功");
+            // 记住登录信息
+            SessionUtil.bindSession(new Session(userId, loginRequestPacket.getUserName()), ctx.channel());
         } else {
             loginResponsePacket.setReason("账号密码校验失败");
             loginResponsePacket.setSuccess(false);
@@ -40,5 +47,23 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
     private boolean valid(LoginRequestPacket loginRequestPacket) {
         return true;
+    }
+
+
+    /**
+     * 随机生成用户id
+     * @return
+     */
+    private static String randomUserId() {
+        return UUID.randomUUID().toString().split("-")[0];
+    }
+
+    /**
+     * 退出移除绑定
+     * @param ctx
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        SessionUtil.unBindSession(ctx.channel());
     }
 }

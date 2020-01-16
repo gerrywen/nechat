@@ -12,11 +12,17 @@ import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.MESSA
 public class MessageRequestPacket extends Packet {
 
     /**
+     * 发送给哪个用户
+     */
+    private String toUserId;
+
+    /**
      * 发送消息
      */
     private String message;
 
-    public MessageRequestPacket(String message) {
+    public MessageRequestPacket(String toUserId, String message) {
+        this.toUserId = toUserId;
         this.message = message;
     }
 

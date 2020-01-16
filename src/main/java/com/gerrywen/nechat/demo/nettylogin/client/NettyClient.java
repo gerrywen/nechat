@@ -5,8 +5,10 @@ import com.gerrywen.nechat.demo.nettylogin.client.handler.MessageResponseHandler
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.Spliter;
+import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.MessageRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
+import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -82,25 +84,41 @@ public class NettyClient {
 
 
     private static void startConsoleThread(Channel channel) {
+
+        Scanner sc = new Scanner(System.in);
+        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+
         new Thread(() -> {
 
             while (!Thread.interrupted()) {
-                if (LoginUtil.hasLogin(channel)) {
-                    System.out.println("输入消息发送至服务端: ");
-                    Scanner sc = new Scanner(System.in);
-                    String line = sc.nextLine();
+                if (!SessionUtil.hasLogin(channel)) {
+                    System.out.print("输入用户名登录: ");
+                    String username = sc.nextLine();
+                    loginRequestPacket.setUserName(username);
 
+                    // 密码使用默认的
+                    loginRequestPacket.setPassword("pwd");
 
-                    // 发送消息包
-//                    MessageRequestPacket packet = new MessageRequestPacket();
-//                    packet.setMessage(line);
-//                    ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
-
-                    // 使用pipline直接将java对象写入，自动编码
-                    channel.writeAndFlush(new MessageRequestPacket(line));
+                    // 发送登录数据包
+                    channel.writeAndFlush(loginRequestPacket);
+                    waitForLoginResponse();
+                } else {
+                    System.out.print("输入对方用户名ID: ");
+                    String toUserId = sc.next();
+                    System.out.print("输入发送给对方的消息: ");
+                    String message = sc.next();
+                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
                 }
             }
 
         }).start();
+    }
+
+
+    private static void waitForLoginResponse() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignored) {
+        }
     }
 }

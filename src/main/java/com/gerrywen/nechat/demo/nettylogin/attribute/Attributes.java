@@ -1,5 +1,6 @@
 package com.gerrywen.nechat.demo.nettylogin.attribute;
 
+import com.gerrywen.nechat.demo.nettylogin.session.Session;
 import io.netty.util.AttributeKey;
 
 /**
@@ -11,4 +12,9 @@ public interface Attributes {
      * 登录属性
      */
     AttributeKey<Boolean> LOGIN = AttributeKey.newInstance("login");
+
+    /**
+     * 登录session
+     */
+    AttributeKey<Session> SESSION = AttributeKey.newInstance("session");
 }

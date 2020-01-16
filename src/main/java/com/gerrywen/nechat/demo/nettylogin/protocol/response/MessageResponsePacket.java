@@ -12,6 +12,17 @@ import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.MESSA
 public class MessageResponsePacket extends Packet {
 
     /**
+     * 消息来源用户id
+     */
+    private String fromUserId;
+
+    /**
+     * 消息来源用户名称
+     */
+    private String fromUserName;
+
+
+    /**
      * 响应回复消息
      */
     private String message;
