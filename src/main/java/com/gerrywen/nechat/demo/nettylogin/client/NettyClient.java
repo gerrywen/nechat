@@ -4,6 +4,7 @@ import com.gerrywen.nechat.demo.nettylogin.client.handler.LoginResponseHandler;
 import com.gerrywen.nechat.demo.nettylogin.client.handler.MessageResponseHandler;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
+import com.gerrywen.nechat.demo.nettylogin.codec.Spliter;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.MessageRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -42,6 +43,8 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) {
+                        // 过滤非本协议连接
+                        ch.pipeline().addLast(new Spliter());
                         // 接收到服务端消息解码
                         ch.pipeline().addLast(new PacketDecoder());
                         // 效应消息给服务端
