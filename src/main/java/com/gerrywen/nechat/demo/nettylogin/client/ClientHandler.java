@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
+ * 废弃~
  * @author wenguoli
  * @date 2020/1/15 15:03
  */

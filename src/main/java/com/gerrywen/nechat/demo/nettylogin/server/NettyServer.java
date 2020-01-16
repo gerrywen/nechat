@@ -1,5 +1,9 @@
 package com.gerrywen.nechat.demo.nettylogin.server;
 
+import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
+import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
+import com.gerrywen.nechat.demo.nettylogin.server.handler.LoginRequestHandler;
+import com.gerrywen.nechat.demo.nettylogin.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -31,7 +35,10 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch){
-                        ch.pipeline().addLast(new ServerHandler());
+                        ch.pipeline().addLast(new PacketDecoder());
+                        ch.pipeline().addLast(new LoginRequestHandler());
+                        ch.pipeline().addLast(new MessageRequestHandler());
+                        ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
 

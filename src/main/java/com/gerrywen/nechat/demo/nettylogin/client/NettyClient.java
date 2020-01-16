@@ -1,10 +1,12 @@
 package com.gerrywen.nechat.demo.nettylogin.client;
 
-import com.gerrywen.nechat.demo.nettylogin.protocol.PacketCodeC;
+import com.gerrywen.nechat.demo.nettylogin.client.handler.LoginResponseHandler;
+import com.gerrywen.nechat.demo.nettylogin.client.handler.MessageResponseHandler;
+import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
+import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.MessageRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -40,7 +42,13 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) {
-                        ch.pipeline().addLast(new ClientHandler());
+                        // 接收到服务端消息解码
+                        ch.pipeline().addLast(new PacketDecoder());
+                        // 效应消息给服务端
+                        ch.pipeline().addLast(new LoginResponseHandler());
+                        ch.pipeline().addLast(new MessageResponseHandler());
+                        // 消息进行编码传输
+                        ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
 
@@ -50,7 +58,7 @@ public class NettyClient {
     private static void connect(Bootstrap bootstrap, String host, int port, int retry) {
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
-                System.out.println(new Date() + ": 连接成功!");
+                System.out.println(new Date() + ": 连接成功，启动控制台线程……");
 
                 Channel channel = ((ChannelFuture) future).channel();
                 startConsoleThread(channel);
@@ -81,11 +89,12 @@ public class NettyClient {
 
 
                     // 发送消息包
-                    MessageRequestPacket packet = new MessageRequestPacket();
-                    packet.setMessage(line);
+//                    MessageRequestPacket packet = new MessageRequestPacket();
+//                    packet.setMessage(line);
+//                    ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
 
-                    ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
-                    channel.writeAndFlush(byteBuf);
+                    // 使用pipline直接将java对象写入，自动编码
+                    channel.writeAndFlush(new MessageRequestPacket(line));
                 }
             }
 
