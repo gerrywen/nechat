@@ -2,6 +2,7 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.LoginResponsePacket;
+import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -25,6 +26,8 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         if (valid(loginRequestPacket)) {
             loginResponsePacket.setSuccess(true);
             System.out.println(new Date() + ": 登录成功!");
+            // 设置登录标记
+            LoginUtil.markAsLogin(ctx.channel());
         } else {
             loginResponsePacket.setReason("账号密码校验失败");
             loginResponsePacket.setSuccess(false);
