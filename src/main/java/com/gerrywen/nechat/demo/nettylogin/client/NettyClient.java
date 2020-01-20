@@ -1,6 +1,10 @@
 package com.gerrywen.nechat.demo.nettylogin.client;
 
+import com.gerrywen.nechat.demo.nettylogin.client.console.ConsoleCommandManager;
+import com.gerrywen.nechat.demo.nettylogin.client.console.LoginConsoleCommand;
+import com.gerrywen.nechat.demo.nettylogin.client.handler.CreateGroupResponseHandler;
 import com.gerrywen.nechat.demo.nettylogin.client.handler.LoginResponseHandler;
+import com.gerrywen.nechat.demo.nettylogin.client.handler.LogoutResponseHandler;
 import com.gerrywen.nechat.demo.nettylogin.client.handler.MessageResponseHandler;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
@@ -51,7 +55,9 @@ public class NettyClient {
                         ch.pipeline().addLast(new PacketDecoder());
                         // 效应消息给服务端
                         ch.pipeline().addLast(new LoginResponseHandler());
+                        ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
+                        ch.pipeline().addLast(new CreateGroupResponseHandler());
                         // 消息进行编码传输
                         ch.pipeline().addLast(new PacketEncoder());
                     }
@@ -82,43 +88,58 @@ public class NettyClient {
         });
     }
 
-
     private static void startConsoleThread(Channel channel) {
-
-        Scanner sc = new Scanner(System.in);
-        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+        ConsoleCommandManager consoleCommandManager = new ConsoleCommandManager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+        Scanner scanner = new Scanner(System.in);
 
         new Thread(() -> {
-
             while (!Thread.interrupted()) {
                 if (!SessionUtil.hasLogin(channel)) {
-                    System.out.print("输入用户名登录: ");
-                    String username = sc.nextLine();
-                    loginRequestPacket.setUserName(username);
-
-                    // 密码使用默认的
-                    loginRequestPacket.setPassword("pwd");
-
-                    // 发送登录数据包
-                    channel.writeAndFlush(loginRequestPacket);
-                    waitForLoginResponse();
+                    loginConsoleCommand.exec(scanner, channel);
                 } else {
-                    System.out.print("输入对方用户名ID: ");
-                    String toUserId = sc.next();
-                    System.out.print("输入发送给对方的消息: ");
-                    String message = sc.next();
-                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+                    consoleCommandManager.exec(scanner, channel);
                 }
             }
-
         }).start();
     }
 
-
-    private static void waitForLoginResponse() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ignored) {
-        }
-    }
+//    private static void startConsoleThread(Channel channel) {
+//
+//        Scanner sc = new Scanner(System.in);
+//        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+//
+//        new Thread(() -> {
+//
+//            while (!Thread.interrupted()) {
+//                if (!SessionUtil.hasLogin(channel)) {
+//                    System.out.print("输入用户名登录: ");
+//                    String username = sc.nextLine();
+//                    loginRequestPacket.setUserName(username);
+//
+//                    // 密码使用默认的
+//                    loginRequestPacket.setPassword("pwd");
+//
+//                    // 发送登录数据包
+//                    channel.writeAndFlush(loginRequestPacket);
+//                    waitForLoginResponse();
+//                } else {
+//                    System.out.print("输入对方用户名ID: ");
+//                    String toUserId = sc.next();
+//                    System.out.print("输入发送给对方的消息: ");
+//                    String message = sc.next();
+//                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+//                }
+//            }
+//
+//        }).start();
+//    }
+//
+//
+//    private static void waitForLoginResponse() {
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException ignored) {
+//        }
+//    }
 }

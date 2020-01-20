@@ -1,8 +1,12 @@
 package com.gerrywen.nechat.demo.nettylogin.protocol;
 
+import com.gerrywen.nechat.demo.nettylogin.protocol.request.CreateGroupRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
+import com.gerrywen.nechat.demo.nettylogin.protocol.request.LogoutRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.MessageRequestPacket;
+import com.gerrywen.nechat.demo.nettylogin.protocol.response.CreateGroupResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.LoginResponsePacket;
+import com.gerrywen.nechat.demo.nettylogin.protocol.response.LogoutResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.MessageResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.serialize.Serializer;
 import com.gerrywen.nechat.demo.nettylogin.serialize.impl.JSONSerializer;
@@ -12,10 +16,8 @@ import io.netty.buffer.ByteBufAllocator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.LOGIN_REQUEST;
-import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.LOGIN_RESPONSE;
-import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.MESSAGE_REQUEST;
-import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.MESSAGE_RESPONSE;
+import static com.gerrywen.nechat.demo.nettylogin.protocol.command.Command.*;
+
 /**
  * @author wenguoli
  * @date 2020/1/15 14:59
@@ -35,6 +37,10 @@ public class PacketCodeC {
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
         packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
+        packetTypeMap.put(LOGOUT_REQUEST, LogoutRequestPacket.class);
+        packetTypeMap.put(LOGOUT_RESPONSE, LogoutResponsePacket.class);
+        packetTypeMap.put(CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
+        packetTypeMap.put(CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();

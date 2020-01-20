@@ -3,9 +3,7 @@ package com.gerrywen.nechat.demo.nettylogin.server;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.Spliter;
-import com.gerrywen.nechat.demo.nettylogin.server.handler.AuthHandler;
-import com.gerrywen.nechat.demo.nettylogin.server.handler.LoginRequestHandler;
-import com.gerrywen.nechat.demo.nettylogin.server.handler.MessageRequestHandler;
+import com.gerrywen.nechat.demo.nettylogin.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -44,6 +42,8 @@ public class NettyServer {
                         // 新增加用户认证handler
                         ch.pipeline().addLast(new AuthHandler());
                         ch.pipeline().addLast(new MessageRequestHandler());
+                        ch.pipeline().addLast(new CreateGroupRequestHandler());
+                        ch.pipeline().addLast(new LogoutRequestHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
