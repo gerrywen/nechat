@@ -2,10 +2,7 @@ package com.gerrywen.nechat.demo.nettylogin.client;
 
 import com.gerrywen.nechat.demo.nettylogin.client.console.ConsoleCommandManager;
 import com.gerrywen.nechat.demo.nettylogin.client.console.LoginConsoleCommand;
-import com.gerrywen.nechat.demo.nettylogin.client.handler.CreateGroupResponseHandler;
-import com.gerrywen.nechat.demo.nettylogin.client.handler.LoginResponseHandler;
-import com.gerrywen.nechat.demo.nettylogin.client.handler.LogoutResponseHandler;
-import com.gerrywen.nechat.demo.nettylogin.client.handler.MessageResponseHandler;
+import com.gerrywen.nechat.demo.nettylogin.client.handler.*;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.Spliter;
@@ -53,12 +50,20 @@ public class NettyClient {
                         ch.pipeline().addLast(new Spliter());
                         // 接收到服务端消息解码
                         ch.pipeline().addLast(new PacketDecoder());
-                        // 效应消息给服务端
+                        // 登录响应处理器
                         ch.pipeline().addLast(new LoginResponseHandler());
-                        ch.pipeline().addLast(new LogoutResponseHandler());
+                        // 收消息处理器
                         ch.pipeline().addLast(new MessageResponseHandler());
+                        // 创建群响应处理器
                         ch.pipeline().addLast(new CreateGroupResponseHandler());
-                        // 消息进行编码传输
+                        // 加群响应处理器
+                        ch.pipeline().addLast(new JoinGroupResponseHandler());
+                        // 退群响应处理器
+                        ch.pipeline().addLast(new QuitGroupResponseHandler());
+                        // 获取群成员响应处理器
+                        ch.pipeline().addLast(new ListGroupMembersResponseHandler());
+                        // 登出响应处理器
+                        ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });

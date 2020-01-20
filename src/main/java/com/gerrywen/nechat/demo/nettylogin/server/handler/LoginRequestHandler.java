@@ -3,6 +3,7 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.LoginResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.session.Session;
+import com.gerrywen.nechat.demo.nettylogin.util.IDUtil;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,20 +21,15 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) {
-        System.out.println(new Date() + ": 收到客户端登录请求……");
-
         LoginResponsePacket loginResponsePacket = new LoginResponsePacket();
         loginResponsePacket.setVersion(loginRequestPacket.getVersion());
         loginResponsePacket.setUserName(loginRequestPacket.getUserName());
 
         if (valid(loginRequestPacket)) {
-            // 登录成功
             loginResponsePacket.setSuccess(true);
-            // 生成用户id
-            String userId = randomUserId();
+            String userId = IDUtil.randomId();
             loginResponsePacket.setUserId(userId);
             System.out.println("[" + loginRequestPacket.getUserName() + "]登录成功");
-            // 记住登录信息
             SessionUtil.bindSession(new Session(userId, loginRequestPacket.getUserName()), ctx.channel());
         } else {
             loginResponsePacket.setReason("账号密码校验失败");
@@ -49,19 +45,6 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         return true;
     }
 
-
-    /**
-     * 随机生成用户id
-     * @return
-     */
-    private static String randomUserId() {
-        return UUID.randomUUID().toString().split("-")[0];
-    }
-
-    /**
-     * 退出移除绑定
-     * @param ctx
-     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         SessionUtil.unBindSession(ctx.channel());
