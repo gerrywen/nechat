@@ -5,6 +5,7 @@ import com.gerrywen.nechat.demo.nettylogin.protocol.response.MessageResponsePack
 import com.gerrywen.nechat.demo.nettylogin.session.Session;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -13,7 +14,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @author wenguoli
  * @date 2020/1/16 10:38
  */
+@ChannelHandler.Sharable
 public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRequestPacket> {
+
+    public static final MessageRequestHandler INSTANCE = new MessageRequestHandler();
+
+    private MessageRequestHandler() {
+
+    }
+
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageRequestPacket messageRequestPacket) {
 

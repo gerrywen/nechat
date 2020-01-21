@@ -1,6 +1,7 @@
 package com.gerrywen.nechat.demo.nettylogin.client.handler;
 
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.JoinGroupResponsePacket;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -10,7 +11,14 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * author: gerry
  * created: 2020-01-20 14:17
  **/
+@ChannelHandler.Sharable
 public class JoinGroupResponseHandler extends SimpleChannelInboundHandler<JoinGroupResponsePacket> {
+
+    public static final JoinGroupResponseHandler INSTANCE = new JoinGroupResponseHandler();
+
+    private JoinGroupResponseHandler() {
+
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupResponsePacket responsePacket) {

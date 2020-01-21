@@ -3,6 +3,7 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.JoinGroupRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.JoinGroupResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -13,7 +14,15 @@ import io.netty.channel.group.ChannelGroup;
  * author: gerry
  * created: 2020-01-20 14:26
  **/
+@ChannelHandler.Sharable
 public class JoinGroupRequestHandler extends SimpleChannelInboundHandler<JoinGroupRequestPacket> {
+
+    public static final JoinGroupRequestHandler INSTANCE = new JoinGroupRequestHandler();
+
+    private JoinGroupRequestHandler() {
+
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupRequestPacket requestPacket) {
         // 1. 获取群对应的 channelGroup，然后将当前用户的 channel 添加进去

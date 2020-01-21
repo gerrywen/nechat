@@ -1,6 +1,7 @@
 package com.gerrywen.nechat.demo.nettylogin.client.handler;
 
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.CreateGroupResponsePacket;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -10,7 +11,15 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * author: gerry
  * created: 2020-01-20 09:20
  **/
+@ChannelHandler.Sharable
 public class CreateGroupResponseHandler extends SimpleChannelInboundHandler<CreateGroupResponsePacket> {
+
+    public static final CreateGroupResponseHandler INSTANCE = new CreateGroupResponseHandler();
+
+    private CreateGroupResponseHandler() {
+
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CreateGroupResponsePacket createGroupResponsePacket) {
         System.out.print("群创建成功，id 为[" + createGroupResponsePacket.getGroupId() + "], ");

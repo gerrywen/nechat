@@ -76,4 +76,13 @@ public interface Command {
      */
     Byte QUIT_GROUP_RESPONSE = 14;
 
+    /**
+     * 发送群聊请求指令
+     */
+    Byte GROUP_MESSAGE_REQUEST = 15;
+
+    /**
+     * 发送群聊响应指令
+     */
+    Byte GROUP_MESSAGE_RESPONSE = 16;
 }

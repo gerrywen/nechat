@@ -2,6 +2,7 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -9,7 +10,15 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @author wenguoli
  * @date 2020/1/16 15:09
  */
+@ChannelHandler.Sharable
 public class AuthHandler extends ChannelInboundHandlerAdapter {
+
+    public static final AuthHandler INSTANCE = new AuthHandler();
+
+    private AuthHandler() {
+
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 判断是否登录，登录过就把授权移除

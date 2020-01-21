@@ -6,6 +6,7 @@ import com.gerrywen.nechat.demo.nettylogin.session.Session;
 import com.gerrywen.nechat.demo.nettylogin.util.IDUtil;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -16,8 +17,13 @@ import java.util.UUID;
  * @author wenguoli
  * @date 2020/1/16 10:33
  */
+@ChannelHandler.Sharable
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
 
+    public static final LoginRequestHandler INSTANCE = new LoginRequestHandler();
+
+    protected LoginRequestHandler() {
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) {

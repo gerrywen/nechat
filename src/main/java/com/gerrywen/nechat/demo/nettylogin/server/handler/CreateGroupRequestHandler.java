@@ -5,6 +5,7 @@ import com.gerrywen.nechat.demo.nettylogin.protocol.response.CreateGroupResponse
 import com.gerrywen.nechat.demo.nettylogin.util.IDUtil;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -19,7 +20,15 @@ import java.util.List;
  * author: gerry
  * created: 2020-01-20 09:36
  **/
+@ChannelHandler.Sharable
 public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<CreateGroupRequestPacket> {
+
+    public static final CreateGroupRequestHandler INSTANCE = new CreateGroupRequestHandler();
+
+    private CreateGroupRequestHandler() {
+
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CreateGroupRequestPacket createGroupRequestPacket) {
 

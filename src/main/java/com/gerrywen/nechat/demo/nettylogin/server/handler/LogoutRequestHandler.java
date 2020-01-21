@@ -3,6 +3,7 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LogoutRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.LogoutResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -12,7 +13,15 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * author: gerry
  * created: 2020-01-20 09:33
  **/
+@ChannelHandler.Sharable
 public class LogoutRequestHandler extends SimpleChannelInboundHandler<LogoutRequestPacket> {
+
+    public static final LogoutRequestHandler INSTANCE = new LogoutRequestHandler();
+
+    private LogoutRequestHandler() {
+
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LogoutRequestPacket msg) {
         SessionUtil.unBindSession(ctx.channel());

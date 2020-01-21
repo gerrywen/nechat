@@ -3,6 +3,7 @@ package com.gerrywen.nechat.demo.nettylogin.server.handler;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.QuitGroupRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.response.QuitGroupResponsePacket;
 import com.gerrywen.nechat.demo.nettylogin.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -13,7 +14,15 @@ import io.netty.channel.group.ChannelGroup;
  * author: gerry
  * created: 2020-01-20 14:40
  **/
+@ChannelHandler.Sharable
 public class QuitGroupRequestHandler extends SimpleChannelInboundHandler<QuitGroupRequestPacket> {
+
+    public static final QuitGroupRequestHandler INSTANCE = new QuitGroupRequestHandler();
+
+    private QuitGroupRequestHandler() {
+
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, QuitGroupRequestPacket requestPacket) {
         // 1. 获取群对应的 channelGroup，然后将当前用户的 channel 移除
