@@ -4,6 +4,7 @@ import com.gerrywen.nechat.demo.nettylogin.codec.PacketCodecHandler;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.Spliter;
+import com.gerrywen.nechat.demo.nettylogin.handler.IMIdleStateHandler;
 import com.gerrywen.nechat.demo.nettylogin.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -36,10 +37,14 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch){
+                        // 空闲检测
+                        ch.pipeline().addLast(new IMIdleStateHandler());
                         // 过滤非本协议连接
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
                         ch.pipeline().addLast(LoginRequestHandler.INSTANCE);
+                        // 服务端回复心跳与客户端空闲检测
+                        ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
                         ch.pipeline().addLast(AuthHandler.INSTANCE);
                         ch.pipeline().addLast(IMHandler.INSTANCE);
                     }

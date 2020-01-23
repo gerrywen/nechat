@@ -40,6 +40,7 @@ public class IMClientHandler extends SimpleChannelInboundHandler<Packet> {
         handlerMap.put(LIST_GROUP_MEMBERS_RESPONSE, ListGroupMembersResponseHandler.INSTANCE);
         handlerMap.put(GROUP_MESSAGE_RESPONSE, GroupMessageResponseHandler.INSTANCE);
         handlerMap.put(LOGOUT_RESPONSE, LogoutResponseHandler.INSTANCE);
+        handlerMap.put(HEARTBEAT_RESPONSE, HeartBeatResponseHandler.INSTANCE);
     }
 
 

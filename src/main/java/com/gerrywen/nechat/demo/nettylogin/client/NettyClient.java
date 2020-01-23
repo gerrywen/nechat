@@ -7,6 +7,7 @@ import com.gerrywen.nechat.demo.nettylogin.codec.PacketCodecHandler;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketDecoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.PacketEncoder;
 import com.gerrywen.nechat.demo.nettylogin.codec.Spliter;
+import com.gerrywen.nechat.demo.nettylogin.handler.IMIdleStateHandler;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.LoginRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.protocol.request.MessageRequestPacket;
 import com.gerrywen.nechat.demo.nettylogin.util.LoginUtil;
@@ -47,6 +48,9 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) {
+                        // 空闲检测
+                        ch.pipeline().addLast(new IMIdleStateHandler());
+
                         // 过滤非本协议连接
                         ch.pipeline().addLast(new Spliter());
                         // 接收到服务端消息解码
@@ -54,6 +58,8 @@ public class NettyClient {
                         // 登录响应处理器
                         ch.pipeline().addLast(LoginResponseHandler.INSTANCE);
                         ch.pipeline().addLast(IMClientHandler.INSTANCE);
+                        // 心跳定时器
+                        ch.pipeline().addLast(HeartBeatTimerHandler.INSTANCE);
                     }
                 });
 
